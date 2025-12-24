@@ -15,6 +15,17 @@ enum DrugSplittingPosiblity:String, Codable {
 }
 enum WeekDays:String, Codable {
     case monday, tusday, wednesday, thursday, friday, saturday, sunday
+    func getWeekDayName() -> String {
+        switch self {
+        case .monday: return "Montag"
+        case .tusday: return "Dienstag"
+        case .wednesday: return "Mittwoch"
+        case .thursday: return "Donnerstag"
+        case .friday: return "Freitag"
+        case .saturday: return "Samstag"
+        case .sunday: return "Sonntag"
+        }
+    }
 }
 @Model
 final class INRRecorderSettings{
@@ -25,10 +36,12 @@ final class INRRecorderSettings{
     var dayForMeasurement: WeekDays?
     var inrLowerBoundary: Int? = nil
     var inrUpperBoundary: Int? = nil
+    var updatedAt: Date? = nil
     
     init()
     {
         drugSplittingCapability = DrugSplittingPosiblity.none
         dayForMeasurement = .sunday
+        updatedAt = .now
     }
 }
