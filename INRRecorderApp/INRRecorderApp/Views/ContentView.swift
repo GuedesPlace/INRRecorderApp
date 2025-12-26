@@ -11,9 +11,13 @@ import SwiftData
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var items: [DosagePoint]
+    @Query var allSettings: [INRRecorderSettings]
+    @State private var isPresentingSettingsView = false
+    @State var settings : INRRecorderSettings?
+    
 
     var body: some View {
-        NavigationSplitView {
+        NavigationStack {
             List {
                 ForEach(items) { item in
                     NavigationLink {
@@ -33,9 +37,17 @@ struct ContentView: View {
                         Label("Add Item", systemImage: "plus")
                     }
                 }
+                ToolbarItem{
+                    Button(action:openSettings) {
+                        Label("Konfiguration", systemImage: "wrench")
+                    }
+                }
             }
-        } detail: {
-            Text("Select an item")
+        }
+        .sheet(isPresented: $isPresentingSettingsView) {
+            NavigationStack {
+                SettingsView(settings: $settings)
+            }.navigationTitle("Einstellungen")
         }
     }
 
@@ -52,6 +64,15 @@ struct ContentView: View {
                 modelContext.delete(items[index])
             }
         }
+    }
+    private func openSettings() {
+        if (allSettings.count > 0) {
+            settings = allSettings[0]
+        } else {
+            settings = INRRecorderSettings()
+            modelContext.insert(settings!)
+        }
+        isPresentingSettingsView = true
     }
 }
 

@@ -9,17 +9,17 @@ import SwiftUI
 import SwiftData
 
 struct SettingsView: View {
-    let settings:INRRecorderSettings
+    @Binding var settings:INRRecorderSettings?
     @State private var isPresentingEditView = false
     
     func drugDoseAsText() -> String {
-        if let dose = settings.drugDose {
+        if let dose = settings?.drugDose {
             return "\(dose) mg"
         }
             return "?? mg"
     }
     func drugSeparation() -> String {
-        if let separation = settings.drugSplittingCapability {
+        if let separation = settings?.drugSplittingCapability {
             switch separation {
             case .none: return "Keine"
             case .half: return "Halbieren"
@@ -29,13 +29,13 @@ struct SettingsView: View {
         return "Nicht definiert";
     }
     func getINRRangeLower() -> String {
-        if let inrRange = settings.inrLowerBoundary {
+        if let inrRange = settings?.inrLowerBoundary {
             return "\(inrRange)"
         }
         return "??";
     }
     func getINRRangeUpper() -> String {
-        if let inrRange = settings.inrUpperBoundary {
+        if let inrRange = settings?.inrUpperBoundary {
             return "\(inrRange)"
         }
         return "??";
@@ -46,7 +46,7 @@ struct SettingsView: View {
                 HStack{
                     Label("Medikament", systemImage: "pills")
                     Spacer()
-                    Text("\(settings.drugName ?? "(keine Angabe)")")
+                    Text("\(settings?.drugName ?? "(keine Angabe)")")
                 }
                 HStack{
                     Label("Dosis pro Pille", systemImage: "scalemass")
@@ -63,31 +63,37 @@ struct SettingsView: View {
                 HStack{
                     Label("Tag der Messung", systemImage: "ellipsis.calendar")
                     Spacer()
-                    Text("\(settings.dayForMeasurement?.getWeekDayName() ?? "(keine Angabe)")")
+                    Text("\(settings?.dayForMeasurement?.getWeekDayName() ?? "(keine Angabe)")")
                 }
                 HStack{
-                    Label("Zeilbereich für den INR", systemImage: "waveform.path.ecg")
+                    Label("Zielbereich für den INR", systemImage: "waveform.path.ecg")
                     Spacer()
                     Text("\(getINRRangeLower()) - \(getINRRangeUpper())")
                 }
             }
         }.navigationTitle("Einstellungen")
-            .toolbar {
+            
+        .toolbar {
                 Button("Bearbeiten") {
                     isPresentingEditView = true
+                }
+            }
+            .sheet(isPresented: $isPresentingEditView) {
+                NavigationStack {
+                    SettingsViewEdit(
+                        settings: settings!
+                    )
+                    .navigationTitle("Einstellungen bearbeiten")
                 }
             }
     }
 }
 
 #Preview(traits: .blankSettingsSampleData) {
-    @Previewable @Query(sort: \INRRecorderSettings.key) var settings: [INRRecorderSettings]
+    @Previewable @Query(sort: \INRRecorderSettings.key) var allSettings: [INRRecorderSettings]
+    @Previewable @State var settings:INRRecorderSettings? = INRRecorderSettings.blankSettings
     
     NavigationStack {
-        if (settings.count > 0) {
-            SettingsView(settings: settings[0])}
-        else {
-            Text("Loading...")
-        }
+            SettingsView(settings: $settings)
     }
 }

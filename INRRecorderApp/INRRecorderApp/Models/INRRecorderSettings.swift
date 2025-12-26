@@ -13,7 +13,7 @@ enum DrugSplittingPosiblity:String, Codable {
     case half
     case quater
 }
-enum WeekDays:String, Codable {
+enum WeekDays:String, Codable, CaseIterable {
     case monday, tusday, wednesday, thursday, friday, saturday, sunday
     func getWeekDayName() -> String {
         switch self {
