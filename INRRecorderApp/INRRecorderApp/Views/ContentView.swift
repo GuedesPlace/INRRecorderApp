@@ -17,7 +17,7 @@ struct ContentView: View {
     
 
     var body: some View {
-        NavigationStack {
+        NavigationSplitView {
             List {
                 ForEach(items) { item in
                     NavigationLink {
@@ -28,26 +28,22 @@ struct ContentView: View {
                 }
                 .onDelete(perform: deleteItems)
             }
+            .navigationTitle("Messungen")
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
                 ToolbarItem{
                     Button(action:openSettings) {
                         Label("Konfiguration", systemImage: "wrench")
                     }
                 }
             }
+            .sheet(isPresented: $isPresentingSettingsView) {
+                        NavigationStack {
+                            SettingsView(settings: $settings)
+                        }.navigationTitle("Einstellungen")
+                    }
         }
-        .sheet(isPresented: $isPresentingSettingsView) {
-            NavigationStack {
-                SettingsView(settings: $settings)
-            }.navigationTitle("Einstellungen")
+        detail: {
+            Text("Detail View")
         }
     }
 
