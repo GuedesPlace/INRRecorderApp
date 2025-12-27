@@ -10,6 +10,7 @@ import SwiftData
 
 struct SettingsView: View {
     @Binding var settings:INRRecorderSettings?
+    @Environment(\.dismiss) private var dismiss
     @State private var isPresentingEditView = false
     
     func drugDoseAsText() -> String {
@@ -73,9 +74,16 @@ struct SettingsView: View {
             }
         }.navigationTitle("Einstellungen")
             
-        .toolbar {
-                Button("Bearbeiten") {
-                    isPresentingEditView = true
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Abbruch") {
+                        dismiss()
+                    }
+                }
+                ToolbarItem(placement: .primaryAction) {
+                    Button("Bearbeiten") {
+                        isPresentingEditView = true
+                    }
                 }
             }
             .sheet(isPresented: $isPresentingEditView) {
