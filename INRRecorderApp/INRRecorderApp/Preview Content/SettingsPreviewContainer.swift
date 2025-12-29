@@ -21,6 +21,25 @@ struct BlankSettingsSampleData: PreviewModifier {
             content.modelContainer(context)
         }
 }
+
+struct DosageSampleData: PreviewModifier {
+    static func makeSharedContext() async throws -> ModelContainer {
+        let container = try ModelContainer(
+            for: DosagePoint.self,
+            configurations: .init(isStoredInMemoryOnly: true)
+        )
+        DosagePoint.fromTodayBack10.forEach { container.mainContext.insert($0) }
+        return container
+    }
+    func body(content: Content, context: ModelContainer) -> some View {
+            content.modelContainer(context)
+        }
+}
+
+
 extension PreviewTrait where T == Preview.ViewTraits {
     @MainActor static var blankSettingsSampleData: Self = .modifier(BlankSettingsSampleData())
+}
+extension PreviewTrait where T == Preview.ViewTraits {
+    @MainActor static var dosageSampleData: Self = .modifier(DosageSampleData())
 }

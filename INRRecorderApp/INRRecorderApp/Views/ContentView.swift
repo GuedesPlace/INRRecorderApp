@@ -14,21 +14,15 @@ struct ContentView: View {
     @Query var allSettings: [INRRecorderSettings]
     @State private var isPresentingSettingsView = false
     @State var settings : INRRecorderSettings?
+    @State private var selectedCategory: NavigationCategory?
     
 
     var body: some View {
         NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.mesasurementDate!, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.mesasurementDate!, format: Date.FormatStyle(date: .numeric, time: .standard))
-                    }
-                }
-                .onDelete(perform: deleteItems)
+            List(NavigationCategory.allCases, selection: $selectedCategory) { category in
+                            NavigationLink(category.localizedName, value: category)
             }
-            .navigationTitle("Messungen")
+            .navigationTitle("INR Recorder")
             .toolbar {
                 ToolbarItem{
                     Button(action:openSettings) {
@@ -43,7 +37,23 @@ struct ContentView: View {
                     }
         }
         detail: {
-            Text("Detail View")
+            switch(selectedCategory) {
+                case .none:
+                Text("No Item Selected")
+            case .dataPoints:
+                NavigationStack {
+                    DataPointsView()
+                }.navigationTitle("Messungen")
+            case .home:
+                NavigationStack {
+                    TodayView()
+                }.navigationTitle("Aktuell")
+            case .graphics:
+                NavigationStack {
+                    StatisticsView()
+                }
+                .navigationTitle("Statistik")
+            }
         }
     }
 

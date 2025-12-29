@@ -7,12 +7,12 @@
 
 import SwiftUI
 
-struct DatePointsView: View {
+struct DataPointsView: View {
     var body: some View {
         Text("Hello, DataPoints!")
     }
 }
 
 #Preview {
-    DatePointsView()
+    DataPointsView()
 }

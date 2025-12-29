@@ -8,11 +8,26 @@
 import SwiftUI
 
 struct DayElementItemView: View {
+    let dayElement: DayElement
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        HStack {
+            Text("\(dayElement.dayName)")
+            Spacer()
+            Text("\(dayElement.drugName)")
+            Spacer()
+            if (dayElement.canCreateNewDosagePoint) {
+                Button("", systemImage:"plus", action: {})
+            } else {
+                Button("", systemImage: "pencil", action: {})
+            }
+        }.padding()
     }
 }
 
 #Preview {
-    DayElementItemView()
+    List {
+        DayElementItemView(dayElement: .yesterdayDayElement)
+        DayElementItemView(dayElement: .todayDayElement)
+        DayElementItemView(dayElement: .tomorrowDayElement)
+    }
 }

@@ -11,18 +11,27 @@ import SwiftData
 @Model
 class DosagePoint: Identifiable {
     var id: UUID?
-    var mesasurementDate: Date?
+    var measurementDate: Date?
     var lastUpdated: Date?
     var drugName: String?
-    var drugDoasge: Int?
+    var drugDosage: Int?
     var drugPillCount: Int?
     
     init(id: UUID = UUID(), mesasurementDate: Date, drugName:String, drugDosage: Int, drugPillCount: Int) {
         self.id = id
-        self.mesasurementDate = mesasurementDate
+        self.measurementDate = mesasurementDate
         self.lastUpdated = Date()
         self.drugName = drugName
-        self.drugDoasge = drugDosage
+        self.drugDosage = drugDosage
         self.drugPillCount = drugPillCount
+    }
+}
+
+extension DosagePoint {
+     func isInRange(start:Date, end:Date) -> Bool {
+        if let d = self.measurementDate {
+            return d >= start && d < end
+        }
+        return false;
     }
 }

@@ -23,6 +23,8 @@ class INRMeasurementPoint: Identifiable {
     var planedPillCountFriday: Int?
     var planedPillCountSaturday: Int?
     var planedPillCountSunday: Int?
+    var isoWeek: Int?
+    var isoYear: Int?
     
     
     public init(id:UUID = UUID(), mesasurementDate: Date, inrValue: Int) {
@@ -31,5 +33,8 @@ class INRMeasurementPoint: Identifiable {
         self.lastUpdated = Date()
         self.inrValue = inrValue
         self.lastUpdated = Date()
+        var iso = mesasurementDate.isoWeek
+        self.isoWeek = iso.week
+        self.isoYear = iso.year
     }
 }
