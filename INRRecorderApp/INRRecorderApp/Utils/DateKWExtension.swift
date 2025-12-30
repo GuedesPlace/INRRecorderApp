@@ -51,6 +51,11 @@ public extension Date {
         return dateFormatter.string(from: self)
     }
     
+    func isSameDayDate(dateToCheck:Date) -> Bool {
+        let calendar = Calendar(identifier: .iso8601)
+        return calendar.isDate(dateToCheck, inSameDayAs: self)
+    }
+    
     static var yesterday: Date {
             Calendar.current.date(byAdding: .day, value: -1, to: Date())!
         }

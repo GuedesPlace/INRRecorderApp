@@ -17,7 +17,7 @@ enum NavigationCategory: Int, Hashable, CaseIterable, Identifiable, Codable {
     var localizedName: LocalizedStringKey {
         switch self {
         case .home:
-            return "Heute"
+            return "Aktuell"
         case .dataPoints:
             return "Messungen"
         case .graphics:

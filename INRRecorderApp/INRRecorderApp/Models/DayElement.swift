@@ -28,7 +28,18 @@ struct DayElement: Identifiable {
         }
         return ""
     }
-    
+    var drugDose: Int {
+        if let relatedDosagePoint = relatedDosagePoint {
+            return relatedDosagePoint.drugDosage ?? 0
+        }
+        return 0
+    }
+    var drugPillCount: Int {
+        if let relatedDosagePoint = relatedDosagePoint {
+            return relatedDosagePoint.drugPillCount ?? 0
+        }
+        return 0
+    }
     init(id:UUID = UUID(), date:Date, relatedDosagePoint: DosagePoint?) {
         self.id = id
         self.date = date
@@ -38,13 +49,13 @@ struct DayElement: Identifiable {
 
 extension DayElement {
     static func createDayElementsForRestOfWeek(currentDate:Date, dosagePoints: [DosagePoint]) -> [DayElement] {
-        var calendar = Calendar(identifier: .iso8601)
+        let calendar = Calendar(identifier: .iso8601)
         let range = currentDate.isoWeekStartEnd
         
         let dayCount = calendar.dateComponents([.day], from: range.start, to: range.end).day ?? 0
             
             // Erzeuge die Liste 0...dayCount
-        var allDates = (0...dayCount).compactMap { offset in
+        let allDates = (0...dayCount-1).compactMap { offset in
             calendar.date(byAdding: .day, value: offset, to: range.start)
         }
         

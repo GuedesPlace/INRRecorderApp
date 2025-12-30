@@ -27,27 +27,34 @@ struct TodayView: View {
     }
     private var dateRangeForWeek: (start:Date, end:Date) { currentDate.isoWeekStartEnd }
     var body: some View {
-        VStack {
-            DayHeader(selectedDate: $currentDate)
-            Text("KW: \(currentDate.isoWeekYearAsString)")
-            List(dayElements) {
-                dayElement in DayElementItemView(dayElement: dayElement).id(dayElement.id)
-            }
-        }
-        .padding()
-        .onChange(of: currentDate) { prevValue, newValue in
-            print("Datum geändert → KW/Jahr: \(newValue.isoWeekYearAsString))")
-            let prevRange = prevValue.isoWeekStartEnd
-            if (newValue < prevRange.start || newValue > prevRange.end  ) {
-                    Task { @MainActor in
-                        await loadDataForWeek();
+            VStack {
+                DayHeader(selectedDate: $currentDate)
+                Section(header:Text("KW: \(currentDate.isoWeekYearAsString)")) {
+                    ScrollView {
+                        VStack {
+                            ForEach(dayElements, id:\.id) {
+                                dayElement in
+                                NavigationLink(value:dayElement.id )
+                                {
+                                    DayElementItemView(dayElement: dayElement, selecteDate: currentDate)
+                                }
+                            }
+                        }
+                    }.scrollIndicators(.visible)
                 }
             }
-        }
-        .task { await loadDataForWeek() }
-        .refreshable { await loadDataForWeek() } // Pull-to-refresh
-
-
+            .padding()
+            .onChange(of: currentDate) { prevValue, newValue in
+                print("Datum geändert → KW/Jahr: \(newValue.isoWeekYearAsString))")
+                let prevRange = prevValue.isoWeekStartEnd
+                if (newValue < prevRange.start || newValue > prevRange.end  ) {
+                    Task { @MainActor in
+                        await loadDataForWeek();
+                    }
+                }
+            }
+            .task { await loadDataForWeek() }
+            .refreshable { await loadDataForWeek() } // Pull-to-refresh
     }
     
     @MainActor

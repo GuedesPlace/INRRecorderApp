@@ -45,9 +45,7 @@ struct ContentView: View {
                     DataPointsView()
                 }.navigationTitle("Messungen")
             case .home:
-                NavigationStack {
                     TodayView()
-                }.navigationTitle("Aktuell")
             case .graphics:
                 NavigationStack {
                     StatisticsView()
